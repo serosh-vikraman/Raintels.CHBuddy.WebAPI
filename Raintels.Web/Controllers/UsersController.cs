@@ -47,10 +47,12 @@ namespace Raintels.CHBuddy.Web.API.Controllers
 
             try
             {
-                var response = await auth.VerifyIdTokenAsync(request.Token);
-                 
+                var response = await auth.VerifyIdTokenAsync(request.Token);                 
                 if (response != null)
-                    return Accepted();
+                {
+                    string email = response.Claims["Email"].ToString();
+                    return Accepted(response);
+                }
             }
             catch (FirebaseException ex)
             {
