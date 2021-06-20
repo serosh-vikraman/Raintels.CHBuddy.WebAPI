@@ -76,6 +76,8 @@ namespace Raintels.CHBuddy.Web.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IStudentManager, StudentManager>();
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IEventManager, EventManager>();
 
         }
 

@@ -10,6 +10,7 @@ namespace Raintels.Service
         public AutoMapping()
         {
             CreateMap<StudentDataModel, StudentViewModel>().ReverseMap();
+            CreateMap<EventDataModel, EventViewModel>().ReverseMap();
         }
     }
 }
