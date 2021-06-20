@@ -63,5 +63,42 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 throw ex;
             }
         }
+
+
+        [HttpPost("updateQnACount")]
+        public ResponseDataModel<EventAnalyticsViewModel> updateQnACount(EventAnalyticsViewModel eventDetails)
+        {
+            Log.Information("ManageEventAnalaysis");
+            var result = eventService.ManageEventAnalysis(eventDetails,1).Result;
+            Log.Information("EndManageEventAnalaysis");
+
+            var response = new ResponseDataModel<EventAnalyticsViewModel>()
+            {
+                Status = HttpStatusCode.OK,
+                Message = "saved Successfully",
+                Response = result
+            };
+            return response;
+        }
+
+        [HttpPost("updateQnALikeCount")]
+        public ResponseDataModel<EventAnalyticsViewModel> updateQnALikeCount(EventAnalyticsViewModel eventDetails)
+        {
+            Log.Information("ManageEventAnalaysis");
+            var result = eventService.ManageEventAnalysis(eventDetails, 2).Result;
+            Log.Information("EndManageEventAnalaysis");
+
+            var response = new ResponseDataModel<EventAnalyticsViewModel>()
+            {
+                Status = HttpStatusCode.OK,
+                Message = "saved Successfully",
+                Response = result
+            };
+            return response;
+        }
+
+
+
+
     }
 }

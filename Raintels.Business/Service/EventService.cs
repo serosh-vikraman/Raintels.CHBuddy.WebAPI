@@ -48,5 +48,13 @@ namespace Raintels.Service
             }
             return studentsViewModel;
         }
+
+        public async Task<EventAnalyticsViewModel> ManageEventAnalysis(EventAnalyticsViewModel eventAnalyticsViewModel, int type)
+        {
+            var eventAnalysisDataModel = mapper.Map<EventAnalysisDataModel>(eventAnalyticsViewModel);
+            eventAnalysisDataModel = await eventManager.ManageEventAnalysis(eventAnalysisDataModel, type);
+            var eventViewModelReturn = mapper.Map<EventAnalyticsViewModel>(eventAnalyticsViewModel);
+            return eventViewModelReturn;
+        }
     }
 }

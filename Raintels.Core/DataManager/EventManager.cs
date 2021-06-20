@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Raintels.Core.DataManager
 {
-    public class EventManager : IEventManager
+    public class EventManager : IEventManager 
     {
         private readonly string connectionString;
         public EventManager(IConfiguration _configuration)
@@ -76,6 +76,31 @@ namespace Raintels.Core.DataManager
                 }
             }
             return eventList;
+        }
+
+        public async Task<EventAnalysisDataModel> ManageEventAnalysis(EventAnalysisDataModel eventAnalysisDetails, int type)
+        {
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("ManageEventAnalysis", con))
+                {
+                    
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_Id", 0);
+                    cmd.Parameters.AddWithValue("P_EventID", eventAnalysisDetails.EventID);
+                    cmd.Parameters.AddWithValue("P_Type", type);
+                    cmd.Parameters.AddWithValue("P_QnACount", eventAnalysisDetails.QnACount);
+                    cmd.Parameters.AddWithValue("P_QnALikeCount", eventAnalysisDetails.QnALikeCount);
+                    cmd.Parameters.AddWithValue("P_AddOrDecrease", eventAnalysisDetails.AddOrDecrease);
+                    
+                    con.Open();
+                    await cmd.ExecuteNonQueryAsync();
+                    con.Close();
+                    return eventAnalysisDetails;
+
+                }
+
+            }
         }
     }
 }
