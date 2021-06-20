@@ -44,7 +44,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         public async Task<IActionResult> VerifyToken(TokenVerifyRequest request)
         {
             var auth = FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance;
-
+            var us = auth.GetUserByEmailAsync("seroshkv@gmail.com").Result;
             try
             {
                 var response = await auth.VerifyIdTokenAsync(request.Token);                 
