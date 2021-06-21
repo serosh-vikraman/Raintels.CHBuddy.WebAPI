@@ -30,9 +30,9 @@ namespace Raintels.Service
             return eventViewModelReturn;
         }
 
-        public async Task<List<EventViewModel>> GetEvent(long userId, long EventId)
+        public async Task<List<EventViewModel>> GetEvent(long userId, long EventId,string EventCode)
         {
-            var events = await eventManager.GetEvent(userId,EventId);
+            var events = await eventManager.GetEvent(userId,EventId, EventCode);
             List<EventViewModel> studentsViewModel = new List<EventViewModel>();
             foreach (var item in events)
             {

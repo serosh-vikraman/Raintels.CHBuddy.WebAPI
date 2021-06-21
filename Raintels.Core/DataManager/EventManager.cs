@@ -45,7 +45,7 @@ namespace Raintels.Core.DataManager
             }
         }
 
-        public async Task<List<EventDataModel>> GetEvent(long userId, long EventId)
+        public async Task<List<EventDataModel>> GetEvent(long userId, long EventId,string EventCode)
         {
             List<EventDataModel> eventList = new List<EventDataModel>();
             using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -55,6 +55,7 @@ namespace Raintels.Core.DataManager
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("P_UserId", userId);
                     cmd.Parameters.AddWithValue("P_EventId", EventId);
+                    cmd.Parameters.AddWithValue("P_EventCode", EventCode);
                     con.Open();
                     using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
                     {

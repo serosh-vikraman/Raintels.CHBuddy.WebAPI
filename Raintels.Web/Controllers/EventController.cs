@@ -42,13 +42,13 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             return response;
         }
 
-        [HttpPost("getEvent/{userId}/{EventId}")]
-        public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId,long EventId)
+        [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]
+        public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId,long EventId,string EventCode)
         {
             try
             {
 
-                var eventList = eventService.GetEvent(userId, EventId).Result;
+                var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {
                     Status = HttpStatusCode.OK,
