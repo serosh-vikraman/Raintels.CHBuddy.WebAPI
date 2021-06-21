@@ -97,6 +97,28 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             return response;
         }
 
+        [HttpPost("getEventAnalysis/{EventId}")]
+        public ResponseDataModel<IEnumerable<EventAnalyticsViewModel>> getEventAnalysis(long EventId)
+        {
+            try
+            {
+
+                var eventList = eventService.GetEventAnalysis(EventId).Result;
+                var response = new ResponseDataModel<IEnumerable<EventAnalyticsViewModel>>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Response = eventList,
+                    Message = "data fetch successfully"
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
 
 
 

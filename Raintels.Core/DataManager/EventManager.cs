@@ -34,6 +34,7 @@ namespace Raintels.Core.DataManager
                     cmd.Parameters.AddWithValue("P_EventEndDateTIme", eventDetails.EventEndDateTIme);
                     cmd.Parameters.AddWithValue("P_TimeZone", eventDetails.TimeZone);
                     cmd.Parameters.AddWithValue("P_CreatedBye", eventDetails.CreatedBy);
+                    cmd.Parameters.AddWithValue("P_EventDetails", eventDetails.EventDetails);
                     con.Open();
                     await cmd.ExecuteNonQueryAsync();
                     con.Close();
@@ -66,6 +67,7 @@ namespace Raintels.Core.DataManager
                             {
                                 EventID = Convert.ToInt32(dt.Rows[i]["EventID"].ToString()),
                                 EventName = dt.Rows[i]["EventName"].ToString(),
+                                EventDetails = dt.Rows[i]["EventDetails"].ToString(),
                                 EventCode = dt.Rows[i]["EventCode"].ToString(),
                                 EventStartDateTIme = dt.Rows[i]["EventStartDateTIme"].ToString(),
                                 EventEndDateTIme = dt.Rows[i]["EventEndDateTIme"].ToString()
@@ -78,6 +80,7 @@ namespace Raintels.Core.DataManager
             return eventList;
         }
 
+   
         public async Task<EventAnalysisDataModel> ManageEventAnalysis(EventAnalysisDataModel eventAnalysisDetails, int type)
         {
             using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -102,5 +105,38 @@ namespace Raintels.Core.DataManager
 
             }
         }
+
+        public  async Task<List<EventAnalysisDataModel>> GetEventAnalysis(long EventId)
+        {
+            List<EventAnalysisDataModel> eventList = new List<EventAnalysisDataModel>();
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("GetEventAnalysis", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_EventId", EventId);
+                    con.Open();
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        await sda.FillAsync(dt);
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            eventList.Add(new EventAnalysisDataModel()
+                            {
+                                EventID = Convert.ToInt32(dt.Rows[i]["EventID"].ToString()),
+                                QnACount = Convert.ToInt32(dt.Rows[i]["QnACount"].ToString()),
+                                QnALikeCount = Convert.ToInt32(dt.Rows[i]["QnALikeCount"].ToString()),
+                               
+                            });
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            return eventList;
+        }
+
     }
 }

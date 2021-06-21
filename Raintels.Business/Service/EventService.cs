@@ -41,6 +41,7 @@ namespace Raintels.Service
                     {
                         EventID = item.EventID,
                         EventName = item.EventName,
+                        EventDetails=item.EventDetails,
                         EventCode = item.EventCode,
                         EventStartDateTIme = item.EventStartDateTIme,
                         EventEndDateTIme = item.EventEndDateTIme,
@@ -49,12 +50,32 @@ namespace Raintels.Service
             return studentsViewModel;
         }
 
+       
+
         public async Task<EventAnalyticsViewModel> ManageEventAnalysis(EventAnalyticsViewModel eventAnalyticsViewModel, int type)
         {
             var eventAnalysisDataModel = mapper.Map<EventAnalysisDataModel>(eventAnalyticsViewModel);
             eventAnalysisDataModel = await eventManager.ManageEventAnalysis(eventAnalysisDataModel, type);
             var eventViewModelReturn = mapper.Map<EventAnalyticsViewModel>(eventAnalyticsViewModel);
             return eventViewModelReturn;
+        }
+
+        public async Task<List<EventAnalyticsViewModel>> GetEventAnalysis(long EventId)
+        {
+            var events = await eventManager.GetEventAnalysis(EventId);
+            List<EventAnalyticsViewModel> analytiData = new List<EventAnalyticsViewModel>();
+            foreach (var item in events)
+            {
+                analytiData.Add(
+                    new EventAnalyticsViewModel()
+                    {
+                        EventID = item.EventID,
+                        QnACount = item.QnACount,
+                        QnALikeCount = item.QnALikeCount,
+                        
+                    });
+            }
+            return analytiData;
         }
     }
 }

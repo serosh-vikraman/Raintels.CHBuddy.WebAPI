@@ -8,6 +8,7 @@ namespace Raintels.Entity.ViewModel
     {
         public long? EventID { get; set; }
         public string EventName { get; set; }
+        public string EventDetails { get; set; }
         public int SocialPlatform { get; set; }
         public string EventCode { get; set; }
         public string EventStartDateTIme { get; set; }

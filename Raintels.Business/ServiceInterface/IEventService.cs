@@ -11,5 +11,6 @@ namespace Raintels.Service.ServiceInterface
         Task<List<EventViewModel>> GetEvent(long userId, long EventId);
         Task<EventAnalyticsViewModel> ManageEventAnalysis(EventAnalyticsViewModel eventViewModel,int type=1);
 
+        Task<List<EventAnalyticsViewModel>> GetEventAnalysis(long EventId);
     }
 }

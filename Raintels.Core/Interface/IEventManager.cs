@@ -9,5 +9,6 @@ namespace Raintels.Core.Interface
         Task<EventDataModel> CreateEvent(EventDataModel eventDetails);
         Task<List<EventDataModel>> GetEvent(long userId, long EventId);
         Task<EventAnalysisDataModel> ManageEventAnalysis(EventAnalysisDataModel eventAnalysisDetails,int type);
+        Task<List<EventAnalysisDataModel>> GetEventAnalysis(long EventId);
     }
 }
