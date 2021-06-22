@@ -74,8 +74,6 @@ namespace Raintels.CHBuddy.Web.API
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IStudentService, StudentService>();
-            services.AddScoped<IStudentManager, StudentManager>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IEventManager, EventManager>();
 
@@ -112,7 +110,7 @@ namespace Raintels.CHBuddy.Web.API
             {
                 endpoints.MapControllers();
             });
-             //app.UseSpa(spa =>
+            //app.UseSpa(spa =>
             //{
             //    spa.Options.SourcePath = "client-app";
             //    if (env.IsDevelopment() || env.IsEnvironment("local"))
