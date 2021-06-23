@@ -139,5 +139,75 @@ namespace Raintels.Core.DataManager
             return eventList;
         }
 
+        public async Task<PollDataModel> savePoll(PollDataModel pollDetails)
+        {
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SavePoll", con))
+                {
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_Id", 0);
+                    cmd.Parameters.AddWithValue("P_EventID", pollDetails.EventID);
+                    cmd.Parameters.AddWithValue("P_PollType", pollDetails.PollType);
+                    cmd.Parameters.AddWithValue("P_PollTitle", pollDetails.PollTitle);
+                    cmd.Parameters.AddWithValue("P_isCorrectAnswerApplicable", pollDetails.isCorrectAnswerApplicable);
+                    cmd.Parameters.AddWithValue("P_isMultipeCorrectAnswerApplicable", pollDetails.isMultipeCorrectAnswerApplicable);
+                    cmd.Parameters.AddWithValue("P_IsActive", pollDetails.IsActive);
+                    cmd.Parameters.AddWithValue("P_ParticipatedCount", pollDetails.ParticipatedCount);
+                    cmd.Parameters.AddWithValue("P_CorrectAnswerCount", pollDetails.CorrectAnswerCount);
+                    cmd.Parameters.AddWithValue("P_PollOptions", pollDetails.xmlPollOptions);
+                    
+                    con.Open();
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    DataSet ds = new DataSet();
+                    await adapter.FillAsync(ds);
+                   // await cmd.ExecuteNonQueryAsync();
+                    con.Close();
+                    int outPut = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+                     
+
+
+
+                    return pollDetails;
+
+                }
+             }
+        }
+
+        public async Task<List<PollUserViewModel>> GetPollByCode(string EventCode)
+        {
+            List<PollUserViewModel> pollList = new List<PollUserViewModel>();
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("GetPollByCode", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_EventCode", EventCode);
+                    con.Open();
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        await sda.FillAsync(dt);
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            pollList.Add(new PollUserViewModel()
+                            {
+                                EventCode = dt.Rows[i]["EventCode"].ToString(),
+                                PollId = Convert.ToInt32(dt.Rows[i]["PollId"].ToString()),
+                                PollTitle = dt.Rows[i]["PollTitle"].ToString(),
+                                isCorrectAnswerApplicable = Convert.ToInt32(dt.Rows[i]["isCorrectAnswerApplicable"].ToString()),
+                                isMultipeCorrectAnswerApplicable = Convert.ToInt32(dt.Rows[i]["isMultipeCorrectAnswerApplicable"].ToString()),
+
+                            });
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            return pollList;
+        }
     }
 }

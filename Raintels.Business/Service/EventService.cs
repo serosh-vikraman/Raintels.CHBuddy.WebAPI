@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using Raintels.Core.Interface;
 using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Raintels.Service
 {
@@ -73,6 +79,53 @@ namespace Raintels.Service
                         QnACount = item.QnACount,
                         QnALikeCount = item.QnALikeCount,
                         
+                    });
+            }
+            return analytiData;
+        }
+
+        public async Task<PollViewModel> savePoll(PollViewModel pollDetails)
+        {
+
+
+            var pollDataModel = mapper.Map<PollDataModel>(pollDetails);
+
+
+
+            var xmlElm = new XElement("TableDetails",
+                from ObjDetails in pollDetails.PollOptions
+                select new XElement("TableDetail",
+                             new XElement("PollID", ObjDetails.PollID),
+                             new XElement("OptionTitle", ObjDetails.OptionTitle),
+                             new XElement("isCorrect", ObjDetails.isCorrect),
+                             new XElement("IsActive", ObjDetails.IsActive)
+                           ));
+
+            pollDataModel.xmlPollOptions = xmlElm.ToString();
+
+
+
+            pollDataModel = await eventManager.savePoll(pollDataModel);
+
+           var PollViewModelReturn = mapper.Map<PollViewModel>(pollDataModel);
+          return PollViewModelReturn;
+        }
+
+        public async Task<List<PollUserViewModel>> GetPollByCode(string EventCode)
+        {
+            var events = await eventManager.GetPollByCode(EventCode);
+            List<PollUserViewModel> analytiData = new List<PollUserViewModel>();
+            foreach (var item in events)
+            {
+                analytiData.Add(
+                    new PollUserViewModel()
+                    {
+                        EventCode = item.EventCode,
+                        PollTitle = item.PollTitle,
+                        isCorrectAnswerApplicable = item.isCorrectAnswerApplicable,
+                        isMultipeCorrectAnswerApplicable = item.isMultipeCorrectAnswerApplicable,
+                        PollId = item.PollId,
+
                     });
             }
             return analytiData;

@@ -12,6 +12,8 @@ namespace Raintels.Service
             CreateMap<StudentDataModel, StudentViewModel>().ReverseMap();
             CreateMap<EventDataModel, EventViewModel>().ReverseMap();
             CreateMap<EventAnalysisDataModel, EventAnalyticsViewModel>().ReverseMap();
+            CreateMap<PollOptionsDataModel, PollOptionsViewModel>().ReverseMap();
+            CreateMap<PollDataModel, PollViewModel>().ReverseMap();
         }
     }
 }

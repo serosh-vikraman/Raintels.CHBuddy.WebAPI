@@ -12,5 +12,10 @@ namespace Raintels.Service.ServiceInterface
         Task<EventAnalyticsViewModel> ManageEventAnalysis(EventAnalyticsViewModel eventViewModel,int type=1);
 
         Task<List<EventAnalyticsViewModel>> GetEventAnalysis(long EventId);
+
+
+        Task<PollViewModel> savePoll(PollViewModel pollDetails);
+
+        Task<List<PollUserViewModel>> GetPollByCode(string EventCode);
     }
 }

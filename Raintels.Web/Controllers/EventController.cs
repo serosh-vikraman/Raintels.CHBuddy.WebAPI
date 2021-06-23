@@ -120,6 +120,44 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         }
 
 
+        /*******************POLL SECTION******************/
+
+        [HttpPost("savePoll")]
+        public ResponseDataModel<PollViewModel> savePoll(PollViewModel pollDetails)
+        {
+            Log.Information("SaveEvent");
+            var result = eventService.savePoll(pollDetails).Result;
+            Log.Information("EndSaveEvent");
+
+            var response = new ResponseDataModel<PollViewModel>()
+            {
+                Status = HttpStatusCode.OK,
+                Message = "saved Successfully",
+                Response = result
+            };
+            return response;
+        }
+
+        [HttpPost("GetPollByCode/{EventCode}")]
+        public ResponseDataModel<IEnumerable<PollUserViewModel>> GetPollByCode(string EventCode)
+        {
+            try
+            {
+                var pollList = eventService.GetPollByCode(EventCode).Result;
+                var response = new ResponseDataModel<IEnumerable<PollUserViewModel>>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Response = pollList,
+                    Message = "data fetch successfully"
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
 
 
     }
