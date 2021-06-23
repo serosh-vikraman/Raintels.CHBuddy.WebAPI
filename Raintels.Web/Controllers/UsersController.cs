@@ -74,6 +74,15 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 "Have a nice day!!"
             };
         }
+        [HttpGet("test")]        
+        public IEnumerable<string> Test()
+        {
+            return new List<string>()
+            {
+                "After Auto Deployment",
+                "Have a nice day!!"
+            };
+        }
     }
     public class TokenVerifyRequest
     {
