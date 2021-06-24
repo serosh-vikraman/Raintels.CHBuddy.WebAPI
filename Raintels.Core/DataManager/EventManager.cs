@@ -209,5 +209,39 @@ namespace Raintels.Core.DataManager
             }
             return pollList;
         }
+
+        public async Task<List<PollOptionsViewModel>> GetPollOptions(long PollId)
+        {
+            List<PollOptionsViewModel> pollList = new List<PollOptionsViewModel>();
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("GetPollOptions", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_PollId", PollId);
+                    con.Open();
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        await sda.FillAsync(dt);
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            pollList.Add(new PollOptionsViewModel()
+                            {
+                                OptionID = Convert.ToInt32(dt.Rows[i]["OptionID"].ToString()),
+                                OptionTitle = dt.Rows[i]["OptionTitle"].ToString(),
+                                isCorrect = Convert.ToInt32(dt.Rows[i]["isCorrect"].ToString()),
+                                IsActive = Convert.ToInt32(dt.Rows[i]["IsActive"].ToString()),
+                                PollID = Convert.ToInt32(dt.Rows[i]["PollID"].ToString()),
+
+                            });
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            return pollList;
+        }
     }
 }

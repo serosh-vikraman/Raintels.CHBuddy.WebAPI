@@ -159,6 +159,27 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             }
         }
 
+        [HttpPost("GetPollOptions/{PollId}")]
+        public ResponseDataModel<IEnumerable<PollOptionsViewModel>> GetPollOptions(long PollId)
+        {
+            try
+            {
+                var pollList = eventService.GetPollOptions(PollId).Result;
+                var response = new ResponseDataModel<IEnumerable<PollOptionsViewModel>>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Response = pollList,
+                    Message = "data fetch successfully"
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
 
     }
 }

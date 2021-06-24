@@ -11,6 +11,8 @@ namespace Raintels.Entity.ViewModel
         public string OptionTitle { get; set; }
         public int isCorrect { get; set; }
         public int IsActive { get; set; }
+
+        public long OptionID { get; set; }
     }
 
  

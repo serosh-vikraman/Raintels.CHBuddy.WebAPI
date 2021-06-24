@@ -130,5 +130,25 @@ namespace Raintels.Service
             }
             return analytiData;
         }
+
+        public async Task<List<PollOptionsViewModel>> GetPollOptions(long PollId)
+        {
+            var epollList  = await eventManager.GetPollOptions(PollId);
+            List<PollOptionsViewModel> analytiData = new List<PollOptionsViewModel>();
+            foreach (var item in epollList)
+            {
+                analytiData.Add(
+                    new PollOptionsViewModel()
+                    {
+                        OptionID = item.OptionID,
+                        OptionTitle = item.OptionTitle,
+                        isCorrect = item.isCorrect,
+                        IsActive = item.IsActive,
+                        PollID = item.PollID,
+
+                    });
+            }
+            return analytiData;
+        }
     }
 }
