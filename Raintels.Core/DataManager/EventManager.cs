@@ -7,7 +7,9 @@ using Raintels.Entity.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Raintels.Core.DataManager
 {
@@ -242,6 +244,43 @@ namespace Raintels.Core.DataManager
                 }
             }
             return pollList;
+        }
+
+        public async Task<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
+        {
+            var xmlElm = new XElement("TableDetails",
+             from ObjDetails in pollDetails
+             select new XElement("TableDetail",
+                          new XElement("userID", ObjDetails.userID),
+                          new XElement("PollID", ObjDetails.PollID),
+                          new XElement("OptionID", ObjDetails.OptionID)
+                        ));
+
+
+
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SavePollAnswers", con))
+                {
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                 
+                    cmd.Parameters.AddWithValue("P_Options", xmlElm);
+                    
+                    con.Open();
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    DataSet ds = new DataSet();
+                    await adapter.FillAsync(ds);
+                    // await cmd.ExecuteNonQueryAsync();
+                    con.Close();
+                    int outPut = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+                    return pollDetails;
+
+                }
+            }
+
+
         }
     }
 }

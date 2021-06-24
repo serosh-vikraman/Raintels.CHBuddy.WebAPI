@@ -181,5 +181,23 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         }
 
 
+        /***************POLL OPTION /ANSER MARKING*****************************************************/
+
+        [HttpPost("savePollOptionByUser")]
+        public ResponseDataModel<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
+        {
+            Log.Information("SaveEvent");
+            var result = eventService.savePollOptionByUser(pollDetails).Result;
+            Log.Information("EndSaveEvent");
+
+            var response = new ResponseDataModel<List<PollAnswerMarkingViewModel>>()
+            {
+                Status = HttpStatusCode.OK,
+                Message = "saved Successfully",
+                Response = result
+            };
+            return response;
+        }
+
     }
 }

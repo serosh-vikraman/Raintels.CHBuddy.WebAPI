@@ -150,5 +150,13 @@ namespace Raintels.Service
             }
             return analytiData;
         }
+
+        public async Task<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
+        {
+            var pollDetailsSave = await eventManager.savePollOptionByUser(pollDetails);
+            var eventViewModelReturn = mapper.Map<List<PollAnswerMarkingViewModel>>(pollDetailsSave);
+            return eventViewModelReturn;
+
+        }
     }
 }
