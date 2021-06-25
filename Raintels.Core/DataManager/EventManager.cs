@@ -233,8 +233,8 @@ namespace Raintels.Core.DataManager
                             {
                                 OptionID = Convert.ToInt32(dt.Rows[i]["OptionID"].ToString()),
                                 OptionTitle = dt.Rows[i]["OptionTitle"].ToString(),
-                                isCorrect = Convert.ToInt32(dt.Rows[i]["isCorrect"].ToString()),
-                                IsActive = Convert.ToInt32(dt.Rows[i]["IsActive"].ToString()),
+                                isCorrect = Convert.ToBoolean(dt.Rows[i]["isCorrect"].ToString()),
+                                IsActive = Convert.ToBoolean(dt.Rows[i]["IsActive"].ToString()),
                                 PollID = Convert.ToInt32(dt.Rows[i]["PollID"].ToString()),
 
                             });

@@ -9,8 +9,8 @@ namespace Raintels.Entity.DataModel
         public long OptionID { get; set; }
         public long PollID { get; set; }
         public string OptionTitle { get; set; }
-        public int isCorrect { get; set; }
-        public int IsActive { get; set; }
+        public Boolean isCorrect { get; set; }
+        public Boolean IsActive { get; set; }
     }
     public class PollDataModel
     {

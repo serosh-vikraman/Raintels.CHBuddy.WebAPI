@@ -97,13 +97,11 @@ namespace Raintels.Service
                 select new XElement("TableDetail",
                              new XElement("PollID", ObjDetails.PollID),
                              new XElement("OptionTitle", ObjDetails.OptionTitle),
-                             new XElement("isCorrect", ObjDetails.isCorrect),
-                             new XElement("IsActive", ObjDetails.IsActive)
+                             new XElement("isCorrect",  ObjDetails.isCorrect==true?1:0),
+                             new XElement("IsActive", ObjDetails.IsActive == true ? 1 : 0)
                            ));
 
             pollDataModel.xmlPollOptions = xmlElm.ToString();
-
-
 
             pollDataModel = await eventManager.savePoll(pollDataModel);
 
