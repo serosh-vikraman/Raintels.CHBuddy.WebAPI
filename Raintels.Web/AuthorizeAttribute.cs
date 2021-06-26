@@ -19,14 +19,22 @@ namespace Raintels.CHBuddy.Web.API
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
 
-            var idToken = context.HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value;
-            var token = idToken.ToString().Replace("Bearer", "").Trim();
-            var defaultAuth = FirebaseAuth.DefaultInstance;
-            var decodedToken = await defaultAuth.VerifyIdTokenAsync(token);
-            if (decodedToken == null || decodedToken.Claims == null ||
-                string.IsNullOrEmpty(decodedToken.Claims["email"].ToString()))
+            try
+            {
+                var idToken = context.HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value;
+                var token = idToken.ToString().Replace("Bearer", "").Trim();
+                var defaultAuth = FirebaseAuth.DefaultInstance;
+                var decodedToken = await defaultAuth.VerifyIdTokenAsync(token);
+                if (decodedToken == null || decodedToken.Claims == null ||
+                    string.IsNullOrEmpty(decodedToken.Claims["email"].ToString()))
+                {
+                    context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                }
+            }
+            catch (Exception ex)
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+
             }
         }
 
