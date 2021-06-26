@@ -18,6 +18,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
 {
     [Route("api/event")]
     [ApiController]
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly ILogger<EventController> logger;
@@ -33,7 +34,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         [HttpPost("saveEvent")]
         public ResponseDataModel<EventViewModel> saveEvent(EventViewModel eventDetails)
         {
-           
+
             Log.Information("SaveEvent");
             var result = eventService.CreateEvent(eventDetails).Result;
             Log.Information("EndSaveEvent");
@@ -47,7 +48,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             return response;
         }
 
-        [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]
+        [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]        
         public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId, long EventId, string EventCode)
         {
             try
@@ -211,8 +212,14 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         private async Task<int> ValidateUser()
         {
             var idToken = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value;
+            var token = idToken.ToString().Replace("Bearer", "").Trim();
             var defaultAuth = FirebaseAuth.DefaultInstance;
-            var decodedToken = await defaultAuth.VerifyIdTokenAsync(idToken);
+            var decodedToken = await defaultAuth.VerifyIdTokenAsync(token);
+            if (decodedToken == null || decodedToken.Claims == null ||
+               string.IsNullOrEmpty(decodedToken.Claims["email"].ToString()))
+            {
+                throw new Exception("Unauthorized");
+            }
             var email = decodedToken.Claims["email"].ToString();
             var googleId = decodedToken.Uid;
             UserModel user = new UserModel()
