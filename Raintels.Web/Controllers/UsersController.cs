@@ -95,7 +95,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             var decodedToken = await defaultAuth.VerifyIdTokenAsync(request.Token);
             return true;
         }
-        public SecurityKey CreateSecurityKeyFromPublicKey(string data)
+        private SecurityKey CreateSecurityKeyFromPublicKey(string data)
         {
             return new X509SecurityKey(new X509Certificate2(Encoding.UTF8.GetBytes(data)));
         }
