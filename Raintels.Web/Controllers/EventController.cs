@@ -74,6 +74,32 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 return response;
             }
         }
+        [HttpPost("upcomingevent")]
+        public ResponseDataModel<IEnumerable<EventViewModel>> GetLatestEvent()
+        {
+            try
+            {
+                int userId = ValidateUser().Result;
+                var eventList = eventService.GetLatestEvent(userId).Result;
+                var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Response = eventList,
+                    Message = "data fetch successfully"
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
+                {
+                    Status = HttpStatusCode.InternalServerError,
+                    Response = null,
+                    Message = ex.Message
+                };
+                return response;
+            }
+        }
 
 
         [HttpPost("updateQnACount")]

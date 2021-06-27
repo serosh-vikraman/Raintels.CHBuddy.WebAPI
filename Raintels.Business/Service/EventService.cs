@@ -158,5 +158,25 @@ namespace Raintels.Service
             return eventViewModelReturn;
 
         }
+
+        public async Task<List<EventViewModel>> GetLatestEvent(long userId)
+        {
+            var events = await eventManager.GetLatestEvent(userId);
+            List<EventViewModel> studentsViewModel = new List<EventViewModel>();
+            foreach (var item in events)
+            {
+                studentsViewModel.Add(
+                    new EventViewModel()
+                    {
+                        EventID = item.EventID,
+                        EventName = item.EventName,
+                        EventDetails = item.EventDetails,
+                        EventCode = item.EventCode,
+                        EventStartDateTIme = Convert.ToDateTime(item.EventStartDateTIme).ToString("yyyy-MM-dd HH:mm:ss"),
+                        EventEndDateTIme = Convert.ToDateTime(item.EventEndDateTIme).ToString("yyyy-MM-dd HH:mm:ss")
+                    });
+            }
+            return studentsViewModel;
+        }
     }
 }

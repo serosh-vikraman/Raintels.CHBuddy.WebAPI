@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace Raintels.Core.DataManager
 {
-    public class EventManager : IEventManager 
+    public class EventManager : IEventManager
     {
         private readonly string connectionString;
         public EventManager(IConfiguration _configuration)
@@ -47,7 +47,7 @@ namespace Raintels.Core.DataManager
             }
         }
 
-        public async Task<List<EventDataModel>> GetEvent(long userId, long EventId,string EventCode)
+        public async Task<List<EventDataModel>> GetEvent(long userId, long EventId, string EventCode)
         {
             List<EventDataModel> eventList = new List<EventDataModel>();
             using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -83,14 +83,14 @@ namespace Raintels.Core.DataManager
             return eventList;
         }
 
-   
+
         public async Task<EventAnalysisDataModel> ManageEventAnalysis(EventAnalysisDataModel eventAnalysisDetails, int type)
         {
             using (MySqlConnection con = new MySqlConnection(connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand("ManageEventAnalysis", con))
                 {
-                    
+
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("P_Id", 0);
                     cmd.Parameters.AddWithValue("P_EventID", eventAnalysisDetails.EventID);
@@ -98,7 +98,7 @@ namespace Raintels.Core.DataManager
                     cmd.Parameters.AddWithValue("P_QnACount", eventAnalysisDetails.QnACount);
                     cmd.Parameters.AddWithValue("P_QnALikeCount", eventAnalysisDetails.QnALikeCount);
                     cmd.Parameters.AddWithValue("P_AddOrDecrease", eventAnalysisDetails.AddOrDecrease);
-                    
+
                     con.Open();
                     await cmd.ExecuteNonQueryAsync();
                     con.Close();
@@ -109,7 +109,7 @@ namespace Raintels.Core.DataManager
             }
         }
 
-        public  async Task<List<EventAnalysisDataModel>> GetEventAnalysis(long EventId)
+        public async Task<List<EventAnalysisDataModel>> GetEventAnalysis(long EventId)
         {
             List<EventAnalysisDataModel> eventList = new List<EventAnalysisDataModel>();
             using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -131,7 +131,7 @@ namespace Raintels.Core.DataManager
                                 EventID = Convert.ToInt32(dt.Rows[i]["EventID"].ToString()),
                                 QnACount = Convert.ToInt32(dt.Rows[i]["QnACount"].ToString()),
                                 QnALikeCount = Convert.ToInt32(dt.Rows[i]["QnALikeCount"].ToString()),
-                               
+
                             });
                         }
                     }
@@ -159,23 +159,23 @@ namespace Raintels.Core.DataManager
                     cmd.Parameters.AddWithValue("P_ParticipatedCount", pollDetails.ParticipatedCount);
                     cmd.Parameters.AddWithValue("P_CorrectAnswerCount", pollDetails.CorrectAnswerCount);
                     cmd.Parameters.AddWithValue("P_PollOptions", pollDetails.xmlPollOptions);
-                    
+
                     con.Open();
                     MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     DataSet ds = new DataSet();
                     await adapter.FillAsync(ds);
-                   // await cmd.ExecuteNonQueryAsync();
+                    // await cmd.ExecuteNonQueryAsync();
                     con.Close();
                     int outPut = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
-                     
+
 
 
 
                     return pollDetails;
 
                 }
-             }
+            }
         }
 
         public async Task<List<PollUserViewModel>> GetPollByCode(string EventCode)
@@ -264,9 +264,9 @@ namespace Raintels.Core.DataManager
                 {
 
                     cmd.CommandType = CommandType.StoredProcedure;
-                 
+
                     cmd.Parameters.AddWithValue("P_Options", xmlElm);
-                    
+
                     con.Open();
                     MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -281,6 +281,41 @@ namespace Raintels.Core.DataManager
             }
 
 
+        }
+
+        public async Task<List<EventDataModel>> GetLatestEvent(long userId)
+        {
+            List<EventDataModel> eventList = new List<EventDataModel>();
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("GetLatestEvent", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_UserId", userId);
+
+                    con.Open();
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        await sda.FillAsync(dt);
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            eventList.Add(new EventDataModel()
+                            {
+                                EventID = Convert.ToInt32(dt.Rows[i]["EventID"].ToString()),
+                                EventName = dt.Rows[i]["EventName"].ToString(),
+                                EventDetails = dt.Rows[i]["EventDetails"].ToString(),
+                                EventCode = dt.Rows[i]["EventCode"].ToString(),
+                                EventStartDateTIme = dt.Rows[i]["EventStartDateTIme"].ToString(),
+                                EventEndDateTIme = dt.Rows[i]["EventEndDateTIme"].ToString()
+                            });
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            return eventList;
         }
     }
 }
