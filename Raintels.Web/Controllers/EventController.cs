@@ -146,7 +146,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 var pollList = eventService.GetPollByCode(EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<PollUserViewModel>>()
                 {
-                    Status = HttpStatusCode.OK,
+                 Status = HttpStatusCode.OK,
                     Response = pollList,
                     Message = "data fetch successfully"
                 };
