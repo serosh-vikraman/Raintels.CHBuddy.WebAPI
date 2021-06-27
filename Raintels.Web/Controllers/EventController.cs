@@ -36,7 +36,8 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
 
             Log.Information("SaveEvent");
-            var result = eventService.CreateEvent(eventDetails).Result;
+            int userId = ValidateUser().Result;
+            var result = eventService.CreateEvent(eventDetails, userId).Result;
             Log.Information("EndSaveEvent");
 
             var response = new ResponseDataModel<EventViewModel>()
@@ -48,12 +49,11 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             return response;
         }
 
-        [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]        
+        [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]
         public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId, long EventId, string EventCode)
         {
             try
             {
-                int userIdInfo = ValidateUser().Result;
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {

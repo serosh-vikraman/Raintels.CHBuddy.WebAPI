@@ -7,7 +7,7 @@ namespace Raintels.Service.ServiceInterface
 {
     public interface IEventService
     {
-        Task<EventViewModel> CreateEvent(EventViewModel eventViewModel);
+        Task<EventViewModel> CreateEvent(EventViewModel eventViewModel, int userId);
         Task<List<EventViewModel>> GetEvent(long userId, long EventId,string EventCode);
         Task<EventAnalyticsViewModel> ManageEventAnalysis(EventAnalyticsViewModel eventViewModel,int type=1);
 

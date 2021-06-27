@@ -28,12 +28,13 @@ namespace Raintels.Service
 
         }
 
-        public async Task<EventViewModel> CreateEvent(EventViewModel eventViewModel)
+        public async Task<EventViewModel> CreateEvent(EventViewModel eventViewModel, int userId)
         {
 
             var eventDataModel = mapper.Map<EventDataModel>(eventViewModel);
+            eventDataModel.CreatedBy = userId;
             eventDataModel = await eventManager.CreateEvent(eventDataModel);
-            var eventViewModelReturn = mapper.Map<EventViewModel>(eventViewModel);
+            var eventViewModelReturn = mapper.Map<EventViewModel>(eventDataModel);
             return eventViewModelReturn;
         }
 
@@ -63,7 +64,7 @@ namespace Raintels.Service
         {
             var eventAnalysisDataModel = mapper.Map<EventAnalysisDataModel>(eventAnalyticsViewModel);
             eventAnalysisDataModel = await eventManager.ManageEventAnalysis(eventAnalysisDataModel, type);
-            var eventViewModelReturn = mapper.Map<EventAnalyticsViewModel>(eventAnalyticsViewModel);
+            var eventViewModelReturn = mapper.Map<EventAnalyticsViewModel>(eventAnalysisDataModel);
             return eventViewModelReturn;
         }
 
