@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
 using Serilog;
@@ -16,51 +18,86 @@ namespace Raintels.CHBuddy.Web.API.Controllers
 {
     [Route("api/event")]
     [ApiController]
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly ILogger<EventController> logger;
         private readonly IEventService eventService;
-        public EventController(ILogger<EventController> _logger, IEventService _eventService)
+        private readonly IUserService userService;
+        public EventController(ILogger<EventController> _logger, IEventService _eventService, IUserService _userService)
         {
             logger = _logger;
             eventService = _eventService;
+            userService = _userService;
         }
 
         [HttpPost("saveEvent")]
         public ResponseDataModel<EventViewModel> saveEvent(EventViewModel eventDetails)
         {
+
             Log.Information("SaveEvent");
-            var result = eventService.CreateEvent(eventDetails).Result;
+            int userId = ValidateUser().Result;
+            var result = eventService.CreateEvent(eventDetails, userId).Result;
             Log.Information("EndSaveEvent");
 
             var response = new ResponseDataModel<EventViewModel>()
             {
                 Status = HttpStatusCode.OK,
-                Message="saved Successfully",
+                Message = "saved Successfully",
                 Response = result
             };
             return response;
         }
 
         [HttpPost("getEvent/{userId}/{EventId}/{EventCode}")]
-        public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId,long EventId,string EventCode)
+        public ResponseDataModel<IEnumerable<EventViewModel>> GetEvent(long userId, long EventId, string EventCode)
         {
             try
             {
-
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {
                     Status = HttpStatusCode.OK,
                     Response = eventList,
-                    Message="data fetch successfully"
+                    Message = "data fetch successfully"
                 };
                 return response;
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
+                {
+                    Status = HttpStatusCode.InternalServerError,
+                    Response = null,
+                    Message = ex.Message
+                };
+                return response;
+            }
+        }
+        [HttpPost("upcomingevent")]
+        public ResponseDataModel<IEnumerable<EventViewModel>> GetLatestEvent()
+        {
+            try
+            {
+                int userId = ValidateUser().Result;
+                var eventList = eventService.GetLatestEvent(userId).Result;
+                var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Response = eventList,
+                    Message = "data fetch successfully"
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
+                {
+                    Status = HttpStatusCode.InternalServerError,
+                    Response = null,
+                    Message = ex.Message
+                };
+                return response;
             }
         }
 
@@ -69,7 +106,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         public ResponseDataModel<EventAnalyticsViewModel> updateQnACount(EventAnalyticsViewModel eventDetails)
         {
             Log.Information("ManageEventAnalaysis");
-            var result = eventService.ManageEventAnalysis(eventDetails,1).Result;
+            var result = eventService.ManageEventAnalysis(eventDetails, 1).Result;
             Log.Information("EndManageEventAnalaysis");
 
             var response = new ResponseDataModel<EventAnalyticsViewModel>()
@@ -197,6 +234,27 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 Response = result
             };
             return response;
+        }
+        private async Task<int> ValidateUser()
+        {
+            var idToken = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value;
+            var token = idToken.ToString().Replace("Bearer", "").Trim();
+            var defaultAuth = FirebaseAuth.DefaultInstance;
+            var decodedToken = await defaultAuth.VerifyIdTokenAsync(token);
+            if (decodedToken == null || decodedToken.Claims == null ||
+               string.IsNullOrEmpty(decodedToken.Claims["email"].ToString()))
+            {
+                throw new Exception("Unauthorized");
+            }
+            var email = decodedToken.Claims["email"].ToString();
+            var googleId = decodedToken.Uid;
+            UserModel user = new UserModel()
+            {
+                Email = email,
+                GoogleID = googleId
+            };
+            return userService.CreateUser(user);
+
         }
 
     }

@@ -42,38 +42,44 @@ namespace Raintels.CHBuddy.Web.API
             services.AddControllers();
 
             var pathToKey = Path.Combine
-           (Directory.GetCurrentDirectory(), "keys", "firebase_admin_sdk.json");
+           (Directory.GetCurrentDirectory(), "keys", "chbuddy-e700f-firebase-adminsdk-om6fm-350040d2e0.json");
 
-            if (HostingEnvironment.IsEnvironment("local"))
-                pathToKey = Path.Combine(Directory.GetCurrentDirectory(),
-                            "keys", "firebase_admin_sdk.local.json");
+            // if (HostingEnvironment.IsEnvironment("local"))
+            //     pathToKey = Path.Combine(Directory.GetCurrentDirectory(),
+            //                 "keys", "firebase_admin_sdk.local.json");
 
-            FirebaseApp.Create(new AppOptions
+            // FirebaseApp.Create(new AppOptions
+            // {
+            //     Credential = GoogleCredential.FromFile(pathToKey)
+            // });
+
+            var defaultApp = FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile(pathToKey)
+                Credential = GoogleCredential.FromFile(pathToKey),
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    var firebaseProjectName = Configuration["FirebaseProjectName"];
-                    options.Authority =
-                    "https://securetoken.google.com/" + firebaseProjectName;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = "https://securetoken.google.com/" + firebaseProjectName,
-                        ValidateAudience = true,
-                        ValidAudience = firebaseProjectName,
-                        ValidateLifetime = true
-                    };
-                });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        var firebaseProjectName = Configuration["FirebaseProjectName"];
+            //        options.Authority =
+            //        "https://securetoken.google.com/" + firebaseProjectName;
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = true,
+            //            ValidIssuer = "https://securetoken.google.com/" + firebaseProjectName,
+            //            ValidateAudience = true,
+            //            ValidAudience = firebaseProjectName,
+            //            ValidateLifetime = true
+            //        };
+            //    });
 
             services.AddAutoMapper(typeof(AutoMapping));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IEventManager, EventManager>();
 
@@ -101,7 +107,7 @@ namespace Raintels.CHBuddy.Web.API
 
             //app.UseAuthorization();
             // custom jwt auth middleware
-            app.UseMiddleware<JwtMiddleware>();
+            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

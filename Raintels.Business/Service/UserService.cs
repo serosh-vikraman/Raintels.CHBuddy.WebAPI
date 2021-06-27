@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Raintels.Core.Interface;
+using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
 using System;
@@ -20,10 +22,11 @@ namespace Raintels.Service.Service
         };
 
         private readonly AppSettings _appSettings;
-
-        public UserService(IOptions<AppSettings> appSettings)
+        private readonly IUserManager _userManager;
+        public UserService(IOptions<AppSettings> appSettings, IUserManager userManager)
         {
             _appSettings = appSettings.Value;
+            _userManager = userManager;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -64,6 +67,11 @@ namespace Raintels.Service.Service
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public int CreateUser(UserModel user)
+        {
+            return _userManager.CreateUser(user);
         }
     }
 }
