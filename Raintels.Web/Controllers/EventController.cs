@@ -54,6 +54,8 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             try
             {
+                
+                userId = ValidateUser().Result;
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {

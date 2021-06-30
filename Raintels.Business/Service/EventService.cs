@@ -51,6 +51,7 @@ namespace Raintels.Service
                         EventName = item.EventName,
                         EventDetails = item.EventDetails,
                         EventCode = item.EventCode,
+                        CreatedBy=item.CreatedBy,
                         EventStartDateTIme = Convert.ToDateTime(item.EventStartDateTIme).ToString("yyyy-MM-dd HH:mm:ss"),
                         EventEndDateTIme = Convert.ToDateTime(item.EventEndDateTIme).ToString("yyyy-MM-dd HH:mm:ss")
                     });

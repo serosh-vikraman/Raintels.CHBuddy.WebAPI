@@ -73,7 +73,8 @@ namespace Raintels.Core.DataManager
                                 EventDetails = dt.Rows[i]["EventDetails"].ToString(),
                                 EventCode = dt.Rows[i]["EventCode"].ToString(),
                                 EventStartDateTIme = dt.Rows[i]["EventStartDateTIme"].ToString(),
-                                EventEndDateTIme = dt.Rows[i]["EventEndDateTIme"].ToString()
+                                EventEndDateTIme = dt.Rows[i]["EventEndDateTIme"].ToString(),
+                                CreatedBy = Convert.ToInt32(dt.Rows[i]["CreatedBy"].ToString()),
                             });
                         }
                     }

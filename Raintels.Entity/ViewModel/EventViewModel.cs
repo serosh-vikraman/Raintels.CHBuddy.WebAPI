@@ -14,5 +14,7 @@ namespace Raintels.Entity.ViewModel
         public string EventStartDateTIme { get; set; }
         public string EventEndDateTIme { get; set; }
         public string TimeZone { get; set; }
+
+        public long? CreatedBy { get; set; }
     }
 }
