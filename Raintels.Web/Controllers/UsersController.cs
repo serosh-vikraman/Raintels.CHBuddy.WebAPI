@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 namespace Raintels.CHBuddy.Web.API.Controllers
 {
     [ApiController]
@@ -48,10 +48,10 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         [HttpPost("verify")]
         public async Task<IActionResult> VerifyToken(TokenVerifyRequest request)
         {
-            
+
             try
             {
-                
+
                 HttpClient client = new HttpClient();
                 string encodedJwt = request.Token;
                 // 1. Get Google signing keys
@@ -111,15 +111,12 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 "Have a nice day!!"
             };
         }
-        [HttpGet("test")]        
-        public IEnumerable<string> Test()
+        [HttpGet("test")]
+        public string Test()
         {
-            return new List<string>()
-            {
-                "After Auto Deployment",
-                "Have a nice day!!"
-            };
+            return "Have a nice day!!";
         }
+
     }
     public class TokenVerifyRequest
     {
