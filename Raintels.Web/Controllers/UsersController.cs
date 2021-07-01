@@ -1,17 +1,12 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 namespace Raintels.CHBuddy.Web.API.Controllers
 {
@@ -26,6 +21,64 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             _userService = userService;
         }
 
+
+        [HttpPost("verify")]
+        public async Task<ResponseDataModel<string>> VerifyToken(TokenVerifyRequest request)
+        {
+            try
+            {
+                var idToken = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value;
+                var token = idToken.ToString().Replace("Bearer", "").Trim();
+                var defaultAuth = FirebaseAuth.DefaultInstance;
+                var decodedToken = await defaultAuth.VerifyIdTokenAsync(token);
+                if (decodedToken == null || decodedToken.Claims == null ||
+                   string.IsNullOrEmpty(decodedToken.Claims["email"].ToString()))
+                {
+                    throw new Exception("Unauthorized");
+                }
+                var email = decodedToken.Claims["email"].ToString();
+                var googleId = decodedToken.Uid;
+                UserModel user = new UserModel()
+                {
+                    Email = email,
+                    GoogleID = googleId
+                };
+                var userId = _userService.CreateUser(user);
+                var response = new ResponseDataModel<string>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Message = "Success",
+                    Response = userId.ToString()
+                };
+                return response;
+            }
+            catch (FirebaseException ex)
+            {
+
+                if (ex.Message.Contains("Unauthorized"))
+                {
+                    return new ResponseDataModel<string>()
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                        Message = "Failure",
+                        Response = "0"
+                    };
+                }
+                else
+                {
+                    return new ResponseDataModel<string>()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Message = "Failure",
+                        Response = "0"
+                    };
+                }
+
+            }
+
+        }
+
+
         [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
@@ -37,79 +90,12 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             return Ok(response);
         }
 
-        [Authorize]
-        [HttpGet("getall")]
-        public IActionResult GetAll()
-        {
-            var users = _userService.GetAll();
-            return Ok(users);
-        }
 
-        [HttpPost("verify")]
-        public async Task<IActionResult> VerifyToken(TokenVerifyRequest request)
-        {
-
-            try
-            {
-
-                HttpClient client = new HttpClient();
-                string encodedJwt = request.Token;
-                // 1. Get Google signing keys
-                client.BaseAddress = new Uri("https://www.googleapis.com/robot/v1/metadata/");
-                HttpResponseMessage response = await client.GetAsync(
-                  "x509/securetoken@system.gserviceaccount.com");
-                if (!response.IsSuccessStatusCode) { return null; }
-                var x509Data = await response.Content.ReadAsAsync<Dictionary<string, string>>();
-                SecurityKey[] keys = x509Data.Values.Select(CreateSecurityKeyFromPublicKey).ToArray();
-                // 2. Configure validation parameters
-                const string FirebaseProjectId = "chbuddy-e700f";
-                var parameters = new TokenValidationParameters
-                {
-                    ValidIssuer = "https://securetoken.google.com/" + FirebaseProjectId,
-                    ValidAudience = FirebaseProjectId,
-                    IssuerSigningKeys = keys,
-                };
-                // 3. Use JwtSecurityTokenHandler to validate signature, issuer, audience and lifetime
-                var handler = new JwtSecurityTokenHandler();
-                SecurityToken token;
-                ClaimsPrincipal principal = handler.ValidateToken(encodedJwt, parameters, out token);
-                var jwt = (JwtSecurityToken)token;
-                // 4.Validate signature algorithm and other applicable valdiations
-                if (jwt.Header.Alg != SecurityAlgorithms.RsaSha256)
-                {
-                    throw new SecurityTokenInvalidSignatureException(
-                      "The token is not signed with the expected algorithm.");
-                }
-            }
-            catch (FirebaseException ex)
-            {
-                return BadRequest();
-            }
-
-            return BadRequest();
-        }
-        [HttpPost("verify1")]
-        public async Task<bool> VerifyToken1(TokenVerifyRequest request)
-        {
-            var defaultAuth = FirebaseAuth.DefaultInstance;
-            var decodedToken = await defaultAuth.VerifyIdTokenAsync(request.Token);
-            return true;
-        }
-        private SecurityKey CreateSecurityKeyFromPublicKey(string data)
-        {
-            return new X509SecurityKey(new X509Certificate2(Encoding.UTF8.GetBytes(data)));
-        }
         [HttpGet("secrets")]
         [Authorize]
-        public IEnumerable<string> GetSecrets()
+        public string GetSecrets()
         {
-            return new List<string>()
-            {
-                "This is from the secret controller",
-                "Seeing this means you are authenticated",
-                "You have logged in using your google account from firebase",
-                "Have a nice day!!"
-            };
+            return "Have a nice day!!";
         }
         [HttpGet("test")]
         public string Test()

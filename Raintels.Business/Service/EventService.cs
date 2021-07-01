@@ -1,19 +1,13 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
 using Raintels.Core.Interface;
 using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Raintels.Service
 {
@@ -28,11 +22,10 @@ namespace Raintels.Service
 
         }
 
-        public async Task<EventViewModel> CreateEvent(EventViewModel eventViewModel, int userId)
+        public async Task<EventViewModel> CreateEvent(EventViewModel eventViewModel)
         {
 
             var eventDataModel = mapper.Map<EventDataModel>(eventViewModel);
-            eventDataModel.CreatedBy = userId;
             eventDataModel = await eventManager.CreateEvent(eventDataModel);
             var eventViewModelReturn = mapper.Map<EventViewModel>(eventDataModel);
             return eventViewModelReturn;

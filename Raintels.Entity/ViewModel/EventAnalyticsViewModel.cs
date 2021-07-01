@@ -11,8 +11,7 @@ namespace Raintels.Entity.ViewModel
         public int PollParticipationCount { get; set; }
         public int QnACount { get; set; }
         public int QnALikeCount { get; set; }
-        public string AddOrDecrease { get; set; }
-
+        public string AddOrDecrease { get; set; } 
 
     }
 }
