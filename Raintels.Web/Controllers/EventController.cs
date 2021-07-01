@@ -35,9 +35,9 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             Log.Information("SaveEvent");
             //HttpContext
-         
-             var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
-             eventDetails.CreatedBy = int.Parse(UserId);  
+
+            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+            eventDetails.CreatedBy = int.Parse(UserId);
 
             var result = eventService.CreateEvent(eventDetails).Result;
             Log.Information("EndSaveEvent");
@@ -228,10 +228,9 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         [HttpPost("savePollOptionByUser")]
         public ResponseDataModel<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
         {
-            Log.Information("SavePollOption");
+            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+            pollDetails.ForEach(a => a.userID = long.Parse(UserId));
             var result = eventService.savePollOptionByUser(pollDetails).Result;
-            Log.Information("EndSavePollOption");
-
             var response = new ResponseDataModel<List<PollAnswerMarkingViewModel>>()
             {
                 Status = HttpStatusCode.OK,
@@ -239,6 +238,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 Response = result
             };
             return response;
+
         }
         private async Task<int> ValidateUser()
         {
