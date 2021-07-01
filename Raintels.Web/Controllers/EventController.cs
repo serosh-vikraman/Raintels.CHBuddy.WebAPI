@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Raintels.Entity.DataModel;
 using Raintels.Entity.ViewModel;
 using Raintels.Service.ServiceInterface;
@@ -33,6 +34,11 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         public ResponseDataModel<EventViewModel> saveEvent(EventViewModel eventDetails)
         {
             Log.Information("SaveEvent");
+            //HttpContext
+         
+             var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+             eventDetails.CreatedBy = int.Parse(UserId);  
+
             var result = eventService.CreateEvent(eventDetails).Result;
             Log.Information("EndSaveEvent");
             var response = new ResponseDataModel<EventViewModel>()
@@ -49,6 +55,9 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             try
             {
+                var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+                userId = int.Parse(UserId);
+
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {
@@ -154,9 +163,13 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         [HttpPost("savePoll")]
         public ResponseDataModel<PollViewModel> savePoll(PollViewModel pollDetails)
         {
-            Log.Information("SaveEvent");
+            Log.Information("SavePoll");
+
+            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+            pollDetails.CreatedBy = int.Parse(UserId);
+
             var result = eventService.savePoll(pollDetails).Result;
-            Log.Information("EndSaveEvent");
+            Log.Information("End Save Poll");
 
             var response = new ResponseDataModel<PollViewModel>()
             {
@@ -215,9 +228,9 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         [HttpPost("savePollOptionByUser")]
         public ResponseDataModel<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
         {
-            Log.Information("SaveEvent");
+            Log.Information("SavePollOption");
             var result = eventService.savePollOptionByUser(pollDetails).Result;
-            Log.Information("EndSaveEvent");
+            Log.Information("EndSavePollOption");
 
             var response = new ResponseDataModel<List<PollAnswerMarkingViewModel>>()
             {
