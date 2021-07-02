@@ -23,7 +23,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
 
 
         [HttpPost("verify")]
-        public async Task<ResponseDataModel<string>> VerifyToken(TokenVerifyRequest request)
+        public async Task<ResponseDataModel<string>> VerifyToken()
         {
             try
             {
