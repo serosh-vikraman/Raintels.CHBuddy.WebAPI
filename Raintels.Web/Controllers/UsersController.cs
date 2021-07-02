@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Raintels.CHBuddy.Web.API.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/Users")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
