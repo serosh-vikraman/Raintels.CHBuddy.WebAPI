@@ -55,8 +55,8 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             try
             {
-                var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
-                userId = int.Parse(UserId);
+               // var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+             //   userId = int.Parse(UserId);
 
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
