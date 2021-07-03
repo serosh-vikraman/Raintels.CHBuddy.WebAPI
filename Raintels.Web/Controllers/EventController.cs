@@ -165,8 +165,8 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             Log.Information("SavePoll");
 
-            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
-            pollDetails.CreatedBy = int.Parse(UserId);
+         //   var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+           // pollDetails.CreatedBy = int.Parse(UserId);
 
             var result = eventService.savePoll(pollDetails).Result;
             Log.Information("End Save Poll");
