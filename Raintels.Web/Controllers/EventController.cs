@@ -61,7 +61,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                     headers += "||" + item.Key + item.Value;
                 }
 
-                var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+                var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "USERID").Value;
                 userId = int.Parse(UserId);
 
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
