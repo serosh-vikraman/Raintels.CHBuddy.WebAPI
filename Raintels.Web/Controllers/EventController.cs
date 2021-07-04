@@ -55,6 +55,12 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         {
             try
             {
+                string headers = string.Empty;
+                foreach (var item in HttpContext.Request.Headers)
+                {
+                    headers += "||" + item.Key + item.Value;
+                }
+
                 var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
                 userId = int.Parse(UserId);
 
@@ -63,17 +69,27 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 {
                     Status = HttpStatusCode.OK,
                     Response = eventList,
-                    Message = "data fetch successfully"
+                    Message = "data fetch successfully"+ headers
                 };
                 return response;
             }
             catch (Exception ex)
             {
+                string headers = string.Empty;
+                foreach (var item in HttpContext.Request.Headers)
+                {
+                    headers += "||" + item.Key + item.Value;
+                }
+               // var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+              //  userId = int.Parse(UserId);
+
+
+
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {
                     Status = HttpStatusCode.InternalServerError,
                     Response = null,
-                    Message = ex.Message
+                    Message = headers,
                 };
                 return response;
             }
