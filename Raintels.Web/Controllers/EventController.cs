@@ -69,7 +69,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 {
                     Status = HttpStatusCode.OK,
                     Response = eventList,
-                    Message = "data fetch successfully"+ headers
+                    Message = "data fetch successfully"+ userId
                 };
                 return response;
             }
