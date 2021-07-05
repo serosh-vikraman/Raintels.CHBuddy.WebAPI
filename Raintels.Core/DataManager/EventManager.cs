@@ -75,6 +75,8 @@ namespace Raintels.Core.DataManager
                                 EventStartDateTIme = dt.Rows[i]["EventStartDateTIme"].ToString(),
                                 EventEndDateTIme = dt.Rows[i]["EventEndDateTIme"].ToString(),
                                 CreatedBy = Convert.ToInt32(dt.Rows[i]["CreatedBy"].ToString()),
+                                Email = dt.Rows[i]["Email"].ToString(),
+                                FireBaseId = dt.Rows[i]["GoogleID"].ToString()
                             });
                         }
                     }

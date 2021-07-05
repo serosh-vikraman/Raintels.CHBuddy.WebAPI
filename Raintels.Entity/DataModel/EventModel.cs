@@ -15,5 +15,7 @@ namespace Raintels.Entity.DataModel
         public string EventEndDateTIme { get; set; }
         public string TimeZone { get; set; }
         public long CreatedBy { get; set; }
+        public string Email { get; set; }
+        public string FireBaseId { get; set; }
     }
 }

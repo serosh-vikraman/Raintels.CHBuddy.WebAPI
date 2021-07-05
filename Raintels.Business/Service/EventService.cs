@@ -46,7 +46,9 @@ namespace Raintels.Service
                         EventCode = item.EventCode,
                         CreatedBy=item.CreatedBy,
                         EventStartDateTIme = Convert.ToDateTime(item.EventStartDateTIme).ToString("yyyy-MM-dd HH:mm:ss"),
-                        EventEndDateTIme = Convert.ToDateTime(item.EventEndDateTIme).ToString("yyyy-MM-dd HH:mm:ss")
+                        EventEndDateTIme = Convert.ToDateTime(item.EventEndDateTIme).ToString("yyyy-MM-dd HH:mm:ss"),
+                        Email=item.Email,
+                        FireBaseId=item.FireBaseId
                     });
             }
             return studentsViewModel;
