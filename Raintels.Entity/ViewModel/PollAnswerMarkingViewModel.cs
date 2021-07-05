@@ -12,4 +12,9 @@ namespace Raintels.Entity.ViewModel
         public int OptionID { get; set; }
 
     }
+
+    public class PollAnswersMasters
+    {
+        public List<PollAnswerMarkingViewModel> options { get; set; }
+    }
 }
