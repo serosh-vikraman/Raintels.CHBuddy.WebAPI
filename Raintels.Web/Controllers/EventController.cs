@@ -244,10 +244,11 @@ namespace Raintels.CHBuddy.Web.API.Controllers
         /***************POLL OPTION /ANSER MARKING*****************************************************/
 
         [HttpPost("savePollOptionByUser")]
-        // public ResponseDataModel<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
-        public ResponseDataModel<PollAnswersMasters> savePollOptionByUser(PollAnswersMasters pollDetails)
+        //  public ResponseDataModel<PollAnswersMasters> savePollOptionByUser(PollAnswersMasters pollDetails)
+        public ResponseDataModel<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails)
+
         {
-            /* var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+             var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
              pollDetails.ForEach(a => a.userID = long.Parse(UserId));
              var result = eventService.savePollOptionByUser(pollDetails).Result;
              var response = new ResponseDataModel<List<PollAnswerMarkingViewModel>>()
@@ -256,10 +257,10 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                  Message = "saved Successfully",
                  Response = result
              };
-             return response;*/
+             return response;
 
 
-            List<PollAnswerMarkingViewModel> obj = pollDetails.options;
+          /*  List<PollAnswerMarkingViewModel> obj = pollDetails.options;
             var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
             obj.ForEach(a => a.userID = long.Parse(UserId));
             var result = eventService.savePollOptionByUser(obj).Result;
@@ -270,7 +271,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 Message = "saved Successfully",
                 Response = pollDetails
             };
-            return response;
+            return response;*/
         }
 
       /*  [HttpPost("savePollOptionByUserMaster")]
