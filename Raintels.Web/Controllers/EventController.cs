@@ -36,7 +36,7 @@ namespace Raintels.CHBuddy.Web.API.Controllers
             Log.Information("SaveEvent");
             //HttpContext
 
-            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+             var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "USERID").Value;
             eventDetails.CreatedBy = int.Parse(UserId);
 
             var result = eventService.CreateEvent(eventDetails).Result;
@@ -258,19 +258,33 @@ namespace Raintels.CHBuddy.Web.API.Controllers
              };
              return response;*/
 
-
-            List<PollAnswerMarkingViewModel> obj = pollDetails.options;
-            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
-            obj.ForEach(a => a.userID = long.Parse(UserId));
-            var result = eventService.savePollOptionByUser(obj).Result;
-
-            var response = new ResponseDataModel<PollAnswersMasters>()
+            try
             {
-                Status = HttpStatusCode.OK,
-                Message = "saved Successfully",
-                Response = pollDetails
-            };
-            return response;
+                List<PollAnswerMarkingViewModel> obj = pollDetails.options;
+                var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "USERID").Value;
+                obj.ForEach(a => a.userID = long.Parse(UserId));
+                var result = eventService.savePollOptionByUser(obj).Result;
+
+                var response = new ResponseDataModel<PollAnswersMasters>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Message = "saved Successfully",
+                    Response = pollDetails
+                };
+                return response;
+            }
+            catch (Exception e)
+            {
+
+                var response = new ResponseDataModel<PollAnswersMasters>()
+                {
+                    Status = HttpStatusCode.OK,
+                    Message = e.ToString(),
+                    Response = null
+                };
+                return response;
+            }
+           
         }
 
       /*  [HttpPost("savePollOptionByUserMaster")]
