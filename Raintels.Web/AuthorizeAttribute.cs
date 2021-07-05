@@ -30,6 +30,10 @@ namespace Raintels.CHBuddy.Web.API
                 {
                     context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
                 }
+                var email = decodedToken.Claims["email"].ToString();
+                var googleId = decodedToken.Uid;
+                context.HttpContext.Request.Headers.Add("Email", email);
+                context.HttpContext.Request.Headers.Add("GoogleId", googleId);
             }
             catch (Exception ex)
             {

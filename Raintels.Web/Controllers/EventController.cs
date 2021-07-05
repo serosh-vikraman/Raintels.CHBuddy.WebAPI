@@ -64,12 +64,16 @@ namespace Raintels.CHBuddy.Web.API.Controllers
                 var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "USERID").Value;
                 userId = int.Parse(UserId);
 
+                var Email = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "EMAIL").Value;
+                var GoogleId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key.ToUpper() == "GOOGLEID").Value;
                 var eventList = eventService.GetEvent(userId, EventId, EventCode).Result;
                 var response = new ResponseDataModel<IEnumerable<EventViewModel>>()
                 {
                     Status = HttpStatusCode.OK,
                     Response = eventList,
-                    Message = "data fetch successfully"+ userId
+                    Message = "data fetch successfully",
+                    Email= Email,
+                    GoogleId= GoogleId
                 };
                 return response;
             }
