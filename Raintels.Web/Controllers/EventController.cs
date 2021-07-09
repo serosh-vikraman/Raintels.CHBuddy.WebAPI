@@ -287,22 +287,54 @@ namespace Raintels.CHBuddy.Web.API.Controllers
            
         }
 
-      /*  [HttpPost("savePollOptionByUserMaster")]
-        public ResponseDataModel<PollAnswersMasters> savePollOptionByUserMaster(PollAnswersMasters pollDetails)
+        [HttpPost("GetDetailedEventAnalysis/{EventId}")]
+        public ResponseDataModel<IEnumerable<EventDetailedAnalysisViewModel>> GetDetailedEventAnalysis(long EventId)
         {
-            List<PollAnswerMarkingViewModel> obj = pollDetails.options;
-            var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
-            obj.ForEach(a => a.userID = long.Parse(UserId));
-            var result = eventService.savePollOptionByUser(obj).Result;
-
-            var response = new ResponseDataModel<PollAnswersMasters>()
+            try
             {
-                Status = HttpStatusCode.OK,
-                Message = "saved Successfully",
-                Response = pollDetails
-            };
-            return response;
-        }*/
+                var eventList = eventService.GetDetailedEventAnalysis(EventId).Result;
+                var response = new ResponseDataModel<IEnumerable<EventDetailedAnalysisViewModel>>();
+                if (!eventList.Any()) // empty  only usbale with IEnumerable
+                {
+                    response.Message = "No data found";
+                    response.Status = HttpStatusCode.NoContent;
+                    response.Response = eventList;
+
+                }
+                else
+                {
+                    response.Message = "data fetch successfully";
+                    response.Status = HttpStatusCode.OK;
+                    response.Response = eventList;
+                   
+                }
+               
+                return response;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+        /*  [HttpPost("savePollOptionByUserMaster")]
+          public ResponseDataModel<PollAnswersMasters> savePollOptionByUserMaster(PollAnswersMasters pollDetails)
+          {
+              List<PollAnswerMarkingViewModel> obj = pollDetails.options;
+              var UserId = HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "UserId").Value;
+              obj.ForEach(a => a.userID = long.Parse(UserId));
+              var result = eventService.savePollOptionByUser(obj).Result;
+
+              var response = new ResponseDataModel<PollAnswersMasters>()
+              {
+                  Status = HttpStatusCode.OK,
+                  Message = "saved Successfully",
+                  Response = pollDetails
+              };
+              return response;
+          }*/
 
         private async Task<int> ValidateUser()
         {

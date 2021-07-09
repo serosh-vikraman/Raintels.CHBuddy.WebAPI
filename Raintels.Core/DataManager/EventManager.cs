@@ -320,5 +320,40 @@ namespace Raintels.Core.DataManager
             }
             return eventList;
         }
+
+        public async Task<List<EventDetailedAnalysisViewModel>> GetDetailedEventAnalysis(long EventId)
+        {
+            List<EventDetailedAnalysisViewModel> eventList = new List<EventDetailedAnalysisViewModel>();
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("GetDetailedEventAnalytics", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("P_EventId", EventId);
+
+                    con.Open();
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        await sda.FillAsync(dt);
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            eventList.Add(new EventDetailedAnalysisViewModel()
+                            {
+                                pollAttendedUsers = Convert.ToInt32(dt.Rows[i]["pollAttendedUsers"].ToString()),
+                                pollAttended = Convert.ToInt32(dt.Rows[i]["pollAttended"].ToString()),
+                                rightAnswerMarked = Convert.ToInt32(dt.Rows[i]["rightAnswerMarked"].ToString()),
+                                qnACount = Convert.ToInt32(dt.Rows[i]["QnACount"].ToString()),
+                                qnALikeCount = Convert.ToInt32(dt.Rows[i]["QnALikeCount"].ToString()),
+                              
+                            });
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            return eventList;
+        }
     }
 }

@@ -22,5 +22,8 @@ namespace Raintels.Service.ServiceInterface
         Task<List<PollOptionsViewModel>> GetPollOptions(long PollId);
 
         Task<List<PollAnswerMarkingViewModel>> savePollOptionByUser(List<PollAnswerMarkingViewModel> pollDetails);
+
+
+        Task<List<EventDetailedAnalysisViewModel>> GetDetailedEventAnalysis(long EventId);
     }
 }

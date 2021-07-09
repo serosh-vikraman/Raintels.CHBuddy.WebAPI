@@ -14,4 +14,13 @@ namespace Raintels.Entity.ViewModel
         public string AddOrDecrease { get; set; } 
 
     }
+
+    public class EventDetailedAnalysisViewModel
+    {
+        public int pollAttendedUsers { get; set; }
+        public int pollAttended { get; set; }
+        public int rightAnswerMarked { get; set; }
+        public int qnACount { get; set; }
+        public int qnALikeCount { get; set; }
+    }
 }

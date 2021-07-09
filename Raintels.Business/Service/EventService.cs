@@ -174,5 +174,25 @@ namespace Raintels.Service
             }
             return studentsViewModel;
         }
+
+        public async Task<List<EventDetailedAnalysisViewModel>> GetDetailedEventAnalysis(long EventId)
+        {
+            var events = await eventManager.GetDetailedEventAnalysis(EventId);
+            List<EventDetailedAnalysisViewModel> eventModel = new List<EventDetailedAnalysisViewModel>();
+            foreach (var item in events)
+            {
+                eventModel.Add(
+                    new EventDetailedAnalysisViewModel()
+                    {
+                        pollAttendedUsers = item.pollAttendedUsers,
+                        pollAttended = item.pollAttended,
+                        rightAnswerMarked = item.rightAnswerMarked,
+                        qnACount = item.qnACount,
+                        qnALikeCount= item.qnALikeCount,
+                      
+                    });
+            }
+            return eventModel;
+        }
     }
 }
